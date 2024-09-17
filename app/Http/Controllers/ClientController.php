@@ -4,15 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Client;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
+    protected $userId;
+
     public function __construct(Client $client) {
         $this->client = $client;
+
+        $this->userId = Auth::id();
     }
 
     public function index() {
-        $clients = $this->client->all();
+        $clients = Client::where('user_id', $this->userId)->get();
         return response()->json($clients, 200);
     }
 
@@ -25,7 +30,7 @@ class ClientController extends Controller
             ]);
     
             $this->client->create([
-                "user_id" => 1,
+                "user_id" => Auth::id(),
                 "name" => $request->name,
                 "address" => $request->address,
                 "phone" => $request->phone

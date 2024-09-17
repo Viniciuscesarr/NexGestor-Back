@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('debts', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger("user_id");
+            $table->foreign("user_id")->references("id")->on("users");
             $table->foreignId('client_id')->constrained('clients');
             $table->decimal('total', 10, 2)->nullable();
             $table->timestamps();

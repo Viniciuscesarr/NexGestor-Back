@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
-
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
     public function __construct(Product $product) {
         $this->product = $product;
+
+        $this->userId = Auth::id();
     }
 
     public function index() {
-        $products = $this->product->all();
+        $products = Product::where('user_id', $this->userId)->get();
         return response()->json($products, 200);
     }
 
@@ -25,7 +27,7 @@ class ProductController extends Controller
                 'description' => 'min:10',
             ]);
             $this->product->create([
-                'user_id' => 1,
+                'user_id' => Auth::id(),
                 'name' => $request->name,
                 'description' => $request->description,
                 'price' => $request->price
@@ -52,7 +54,7 @@ class ProductController extends Controller
             }
 
             $product->update([
-                'user_id' => 1,
+                'user_id' => Auth::id(),
                 'name' => $request->name,
                 'description' => $request->description,
                 'price' => $request->price

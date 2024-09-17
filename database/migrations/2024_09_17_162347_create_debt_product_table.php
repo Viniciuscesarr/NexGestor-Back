@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('debt_product', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger("user_id");
+            $table->foreign("user_id")->references("id")->on("users");
             $table->foreignId('debt_id')->constrained('debts')->onDelete('cascade');
             $table->foreignId('product_id')->constrained('products');
             $table->integer('quantity');

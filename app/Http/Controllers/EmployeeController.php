@@ -4,15 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Employee;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
     public function __construct(Employee $employee) {
         $this->employee = $employee;
+
+        $this->userId = Auth::id();
     }
 
     public function index() {
-        $employees = $this->employee->all();
+        $employees = Employee::where('user_id', $this->userId)->get();
 
         return response()->json($employees, 200);
     }
@@ -28,7 +31,7 @@ class EmployeeController extends Controller
             ]);
 
             $this->employee->create([
-                "user_id" => 1,
+                "user_id" => Auth::id(),
                 "name" => $request->name,
                 "email" => $request->email,
                 "address" => $request->address,

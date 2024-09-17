@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
+    public function __construct() {
+        $this->userId = Auth::id();
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -17,6 +22,7 @@ class TransactionController extends Controller
         $transaction = Transaction::create([
             'amount' => $request->input('amount'),
             'type' => $request->input('type'),
+            'user_id' => Auth::id()
         ]);
 
         return response()->json(['message' => 'Transação registrada com sucesso', 'transaction' => $transaction]);

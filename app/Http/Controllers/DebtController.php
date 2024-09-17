@@ -6,12 +6,21 @@ use Illuminate\Http\Request;
 use App\Models\Debt;
 use App\Models\Client;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 
 class DebtController extends Controller
 {
+    public function __construct()
+    {
+        $this->userId = Auth::id();
+    }
+
     public function index()
     {
-        $debts = Debt::with('products')->get();
+        $debts = Debt::where('user_id', $this->userId)
+                     ->with('products')
+                     ->get();
+
         return response()->json($debts);
     }
 
@@ -37,6 +46,7 @@ class DebtController extends Controller
        
         $debt = $cliente->debts()->create([
             'total' => $total,
+            'user_id' => Auth::id()
         ]);
 
        
